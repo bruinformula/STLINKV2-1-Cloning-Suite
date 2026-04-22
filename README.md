@@ -89,3 +89,39 @@ After hitting ```Yes >>>```
 
 18) congrats you now have a stlink v2-1. ensure that everything worked by disconnecting and reconnecting the USB, opening STM32CubeProg, and ensuring that it shows up, you can connect, and you can read the memory of the main MCU. also ensure that in device manager, you see a ```STM32 STLink``` under ```Universal Serial Bus Devices``` and a  ```STMicroelectronics STLink Virtual COM Port (COMX)```. Finally, ensure that a drive named ```UNDEFINED``` pops up, only containing a file called ```DETAILS.TXT```
       - If there is a ```FAIL.TXT```, you have fucked up. check that your jumpers are right
+
+
+📝 Addendum: Troubleshooting macOS "UnsatisfiedLinkError"
+If you are running the Legacy Programmer on a Mac and encounter a java.lang.UnsatisfiedLinkError: Can't load library... libSTLinkUSBDriver.dylib, follow these steps to fix the broken library links.
+
+The Problem
+
+The legacy libSTLinkUSBDriver.dylib was compiled with a hardcoded dependency on libusb located in the /opt/local/ directory (standard for MacPorts). Most modern Mac users either have no libusb or have it installed via Homebrew in /usr/local/, causing the Java app to fail when it can't find its "friend" library.
+
+The Fix
+
+Install Homebrew & libusb If you don't have Homebrew, install it, then run:
+
+Bash
+brew install libusb
+Create the Library Bridge (Symlink) You must trick the driver into finding the Homebrew version of the library where it expects the MacPorts version to be. Run these commands in your terminal:
+
+Bash
+# Create the directory the driver is looking for
+sudo mkdir -p /opt/local/lib
+
+# Create a symbolic link to the Homebrew version
+sudo ln -s /usr/local/lib/libusb-1.0.dylib /opt/local/lib/libusb-1.0.0.dylib
+Strip macOS Quarantine Flags macOS often blocks these older .dylib files from executing. Run this on your cloning suite folder:
+
+Bash
+sudo xattr -rd com.apple.quarantine "/path/to/STLINKV2-1-Cloning-Suite/"
+Launch with Explicit Library Path When running the JAR, tell Java exactly where to find the native folder:
+
+Bash
+java -Djava.library.path="native/mac_x64" -jar STLinkUpgrade.jar
+Troubleshooting Architecture
+
+Intel Macs: The steps above should resolve all issues.
+
+Apple Silicon (M1/M2/M3): You may need to prefix the java command with arch -x86_64 to run the tool via Rosetta 2, as the legacy driver is likely x86_64 only.
