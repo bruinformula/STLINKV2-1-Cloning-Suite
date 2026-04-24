@@ -1,0 +1,12 @@
+{
+  "name": "stlinkv2-1-cloner",
+  "version": "0.1.0",
+  "description": "Electron front-end for the STLINK V2-1 cloning flow",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^35.1.5"
+  }
+}

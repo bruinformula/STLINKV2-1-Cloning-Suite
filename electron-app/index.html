@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STM32CubeProgrammer ST-LINK Workflow</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="window-titlebar">
+        <div class="titlebar-drag">
+          <div class="titlebar-left">
+            <img src="dih.augmented.png" alt="DIH augmented logo" class="titlebar-logo" />
+            <span class="titlebar-title">STM32CubeProgrammer ST-LINK Workflow</span>
+          </div>
+        </div>
+        <div class="titlebar-meta no-drag">
+          <span id="platformBadge" class="badge">platform</span>
+          <span class="badge subtle">ST-LINK V2-1</span>
+        </div>
+      </header>
+
+      <header class="window-toolbar">
+        <div class="toolbar-top-row">
+          <div class="toolbar-brand">
+            <img src="dih.augmented.png" alt="DIH augmented logo" class="toolbar-logo" />
+            <div class="toolbar-brand-text">
+              <p class="eyebrow">STMICROELECTRONICS</p>
+              <p class="toolbar-title">STM32CubeProgrammer ST-LINK Workflow Tool</p>
+            </div>
+          </div>
+
+          <div class="toolbar-group">
+            <button id="refreshButton" class="ghost toolbar-button">Detect Tools</button>
+            <button id="runFlowButton" class="primary toolbar-button">Start Full Workflow</button>
+            <button id="runOptionBytesButton" class="secondary toolbar-button">Program Option Bytes</button>
+          </div>
+        </div>
+
+        <div class="toolbar-bottom-row">
+          <div class="status-chipline">
+            <span id="progressLabel" class="status-chip idle">Idle</span>
+            <span id="progressDetail" class="status-text">Waiting for command.</span>
+          </div>
+
+          <div class="progress-shell" aria-hidden="true">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace-shell">
+        <aside class="left-rail">
+          <div class="rail-title">Modes</div>
+          <button class="rail-item active" type="button">ST-LINK Upgrade Flow</button>
+          <button class="rail-item" type="button">Option Bytes</button>
+          <button class="rail-item" type="button">Console</button>
+
+          <div class="rail-divider"></div>
+          <div class="rail-title">Logging</div>
+          <button id="verboseToggle" class="rail-item rail-toggle" type="button" aria-pressed="false">
+            <span class="toggle-dot"></span>
+            Verbose Logs
+          </button>
+        </aside>
+
+        <section class="workspace-main">
+          <section class="grid">
+            <article class="panel stages-panel">
+              <div class="panel-head">
+                <h2>Operation Sequence</h2>
+                <p>Execution state for flash, updater phases, and option bytes.</p>
+              </div>
+              <div id="stageList" class="stage-list"></div>
+            </article>
+
+            <article class="panel log-panel top-log-panel">
+              <div class="panel-head">
+                <h2>Console Output</h2>
+                <p>CubeProgrammer CLI and bundled updater output.</p>
+              </div>
+              <pre id="logOutput" class="log-output"></pre>
+            </article>
+          </section>
+
+          <section class="grid bottom-grid">
+            <article class="panel settings-panel">
+              <div class="panel-head">
+                <h2>Connection Configuration</h2>
+                <p>Detected values populate automatically until you override them.</p>
+              </div>
+
+              <label>
+                <span>STM32CubeProgrammer CLI path</span>
+                <div class="path-input-row">
+                  <input id="cubeProgrammerPath" type="text" placeholder="/Applications/.../STM32_Programmer_CLI" />
+                  <button id="selectCubeProgrammerPath" class="selector-button" type="button">Select...</button>
+                </div>
+              </label>
+
+              <label>
+                <span>Java runtime path</span>
+                <div class="path-input-row">
+                  <input id="javaPath" type="text" placeholder="/Library/Java/.../bin/java" />
+                  <button id="selectJavaPath" class="selector-button" type="button">Select...</button>
+                </div>
+              </label>
+
+              <label>
+                <span>SWD frequency kHz</span>
+                <input id="swdFrequencyKhz" type="text" placeholder="4000" />
+              </label>
+
+              <label>
+                <span>Option bytes command</span>
+                <input id="optionBytesCommand" type="text" placeholder="nSWBOOT0=0" />
+              </label>
+
+              <label class="checkbox-row">
+                <input id="autoDriveVendorTools" type="checkbox" />
+                <span>Attempt macOS UI automation for bundled updaters</span>
+              </label>
+
+              <div class="detected-box">
+                <h3>Bundled Updaters</h3>
+                <button id="legacyToolPath" class="path-line collapsed-path" type="button">Legacy tool not detected.</button>
+                <button id="recentToolPath" class="path-line collapsed-path" type="button">Recent tool not detected.</button>
+              </div>
+            </article>
+
+            <article class="panel preflight-panel">
+              <div class="panel-head">
+                <h2>Environment Monitor</h2>
+                <p>Local tools, packaged binaries, and platform readiness.</p>
+              </div>
+              <div id="preflightSummary" class="preflight-summary"></div>
+            </article>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div id="replugDialog" class="replug-overlay hidden" aria-live="polite">
+      <div class="replug-card">
+        <h3 id="replugDialogTitle">USB Action Required</h3>
+        <p id="replugDialogMessage">unplug and replug usb</p>
+        <p id="replugDialogCountdown" class="replug-countdown hidden"></p>
+      </div>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

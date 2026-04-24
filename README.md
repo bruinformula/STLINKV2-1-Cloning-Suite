@@ -2,6 +2,39 @@
 All the software needed to clone STLINK V2-1s
 LAST UPDATED 4/24/26; FOR KRILL V2
 
+## Electron app
+
+There is now an Electron wrapper in [electron-app](/Users/guestaccount/Desktop/STLINKV2-1-Cloning-Suite/electron-app) that turns the repo into a guided one-button flow.
+
+What it does:
+1) detects the bundled bootloader and both ST update tools
+2) detects Java and STM32CubeProgrammer CLI, with manual path overrides if auto-detect misses them
+3) mass-erases and flashes [Unprotected-2-1-Bootloader.bin](/Users/guestaccount/Desktop/STLINKV2-1-Cloning-Suite/Unprotected-2-1-Bootloader.bin) through STM32CubeProgrammer CLI
+4) launches the legacy updater, then the most recent updater
+5) attempts best-effort macOS UI automation for those vendor GUIs when enabled
+6) applies the final `nSWBOOT0=0` option-byte change through STM32CubeProgrammer CLI
+
+What it does not do:
+1) it does not reimplement ST's updater protocol from scratch yet
+2) it still depends on STM32CubeProgrammer CLI being installed locally
+3) the legacy and recent ST firmware updaters are still the vendor JARs, because they appear to be GUI-only
+4) if the vendor UI changes, the macOS auto-click logic may miss and you will need to finish that stage manually
+
+Run it like this after installing Node.js:
+
+```bash
+cd electron-app
+npm install
+npm start
+```
+
+Recommended use:
+1) use the app's `Refresh Preflight` button first and confirm it finds Java and `STM32_Programmer_CLI`
+2) leave the override fields empty unless auto-detect is wrong
+3) press `Run Full Clone Flow`
+4) follow the hardware prompts when the app asks you to switch between pogo/SWD and USB
+5) if an ST updater window stalls, use the instructions shown by the app and then close the updater window to let the flow continue
+
 other downloads needed:
 1) [STM32CubeProgrammer]([url](https://www.st.com/en/development-tools/stm32cubeprog.html))
 

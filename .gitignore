@@ -1,0 +1,4 @@
+electron-app/node_modules/
+electron-app/.electron/
+electron-app/dist/
+electron-app/*.log
