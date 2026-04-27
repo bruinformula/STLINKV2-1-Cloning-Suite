@@ -4,9 +4,70 @@
   "description": "Electron front-end for the STLINK V2-1 cloning flow",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder --mac --win",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.stlinkv21.cloner",
+    "productName": "STLINK V2-1 Cloning Suite",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "*.png",
+      "src/**",
+      "node_modules/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../Unprotected-2-1-Bootloader.bin",
+        "to": "Unprotected-2-1-Bootloader.bin"
+      },
+      {
+        "from": "../stsw-link007 - Legacy Programmer",
+        "to": "stsw-link007 - Legacy Programmer"
+      },
+      {
+        "from": "../stsw-link007 - Most Recent Programmer",
+        "to": "stsw-link007 - Most Recent Programmer"
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "devDependencies": {
-    "electron": "^35.1.5"
+    "electron": "^35.1.5",
+    "electron-builder": "^26.8.1"
   }
 }

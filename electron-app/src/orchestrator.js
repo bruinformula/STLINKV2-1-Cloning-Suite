@@ -2,7 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const { runProcess, runUpgradeTool } = require('./vendor-tools');
 
-const repoRoot = path.resolve(__dirname, '..', '..');
+// In a packaged Electron build all companion assets land in process.resourcesPath
+// (via extraResources in electron-builder).  In dev (electron .) they sit two
+// directories above this source file, i.e. the repo workspace root.
+const { app: _electronApp } = require('electron');
+const repoRoot = _electronApp.isPackaged
+  ? process.resourcesPath
+  : path.resolve(__dirname, '..', '..');
 
 const APP_FILES = {
   bootloader: path.join(repoRoot, 'Unprotected-2-1-Bootloader.bin'),
